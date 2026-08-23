@@ -320,7 +320,8 @@ that it has now failed twice and needs reconnecting.
    `brief-today.html`.**
 6. Notify per `NOTIFY`: push naming the file and the single sharpest item.
 7. Reply with two or three sentences: the filename, what the sharpest item is, any source that
-   failed, and anything the sync could not confirm. Not a recap of the brief.
+   failed, anything the sync could not confirm, and any judgment call this spec left open that
+   you had to make. Not a recap of the brief.
 
 ## Ground rules
 
