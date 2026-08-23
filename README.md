@@ -1,3 +1,5 @@
+![The Daily Brief](assets/daily-brief-header.jpg)
+
 # Daily Brief
 
 A morning briefing that builds itself. A scheduled task reads your actual working life — email,
@@ -11,6 +13,15 @@ connected, and it can read files no extension will ever reach.
 
 This repository is a **template**. Everything in it is generic: the example content is fictional,
 and every account-specific detail lives in one `config.json`. Fill that in and it is yours.
+
+<p align="center">
+  <a href="assets/example-brief.png">
+    <img src="assets/example-brief.png" width="300"
+         alt="A full Daily Brief: masthead reading The Friday Brief over a painted hero, a standfirst, the push block, four item sections, the calendar rail, and the send-back panel.">
+  </a>
+  <br>
+  <sub><em>One brief, top to bottom. <a href="assets/example-brief.png">Open it full size</a>. Names and identifiers are blurred; everything else is the page as it renders.</em></sub>
+</p>
 
 ---
 
