@@ -4,21 +4,30 @@ Paste this into the scheduled task. It stays short on purpose: the design and th
 `SPEC.md`, so the task never has to re-derive them and the brief cannot drift when you change
 your mind about a section.
 
-Replace the one path if your vault is laid out differently.
+Replace the one path if your vault is laid out differently. If your harness does not resolve
+vault-relative paths reliably, make it absolute — the run should never spend a step working out
+where the package lives.
 
 ```
-Read Routines/daily-brief/SPEC.md in my vault and follow it exactly.
+Read Routines/daily-brief/SPEC.md in my vault first and follow it exactly. It is
+the source of truth for this task and it supersedes anything you might assume from
+the task's name. Read content.schema.md in the same folder before writing any
+content.
 
-Both phases, in order: sync my task files first, then build today's brief.
+Both phases, in order: sync my tasks and delegated files and write the sync note
+first, then build today's brief.
 
-Write content.json against Routines/daily-brief/content.schema.md, render it with
-build.py, screenshot the result and look at the image before you deliver it.
+Write content.json against content.schema.md, render it with build.py, screenshot
+the result and look at the image before you deliver it.
 
 Save it as a new dated file. Never overwrite a previous brief.
 
 Then push me a notification naming the file and the sharpest item in it, and reply
 with two or three sentences: the filename, the sharpest item, and anything a dead
 source or the sync could not confirm.
+
+Nobody is watching when this fires, so do not ask questions. Where the spec leaves
+a judgment call, make it, and note the call in your reply.
 ```
 
 ## Schedule

@@ -7,9 +7,9 @@ calendar, chat, tickets, code review, support inbox, meeting notes — plus two 
 files you keep yourself, and renders a single self-contained HTML page you open with everything
 else at the start of the day.
 
-It is modelled on the Daily Briefing in the Dia browser, and it exists because that version
-could only see what a browser extension can see. This one plugs into whatever you have
-connected, and it can read files no extension will ever reach.
+It is modelled on the Daily Briefing in the [Dia browser](https://www.diabrowser.com/), and it
+exists because that version could only see what a browser extension can see. This one plugs into
+whatever you have connected, and it can read files no extension will ever reach.
 
 This repository is a **template**. Everything in it is generic: the example content is fictional,
 and every account-specific detail lives in one `config.json`. Fill that in and it is yours.
@@ -89,8 +89,8 @@ reload — ticks and notes are kept in `localStorage`, keyed by the brief's date
 
 The important design decision: **keep the design out of the daily prompt.** If the scheduled task
 has to re-derive four hundred lines of CSS every morning it is slow, expensive, and drifts. So
-the design lives in the repo as a small package and the task just calls it. The task prompt is
-about eight lines and mostly says "read SPEC.md and follow it".
+the design lives in the repo as a small package and the task just calls it. The task prompt is a
+dozen lines and mostly says "read SPEC.md and follow it".
 
 ```
 daily-brief/
