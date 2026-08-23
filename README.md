@@ -14,14 +14,24 @@ whatever you have connected, and it can read files no extension will ever reach.
 This repository is a **template**. Everything in it is generic: the example content is fictional,
 and every account-specific detail lives in one `config.json`. Fill that in and it is yours.
 
-<p align="center">
-  <a href="assets/example-brief.png">
-    <img src="assets/example-brief.png" width="300"
-         alt="A full Daily Brief: masthead reading The Friday Brief over a painted hero, a standfirst, the push block, four item sections, the calendar rail, and the send-back panel.">
-  </a>
-  <br>
-  <sub><em>One brief, top to bottom. <a href="assets/example-brief.png">Open it full size</a>. Names and identifiers are blurred; everything else is the page as it renders.</em></sub>
-</p>
+## See one
+
+**[Open the live demo →](https://patrickhaley.github.io/daily-brief/)**
+
+A whole brief, top to bottom — `docs/index.html`, rendered by `build.py` from
+`daily-brief/examples/content-example.json`. It is the real page, not a screenshot, so it is
+worth poking at: hover or tap the calendar rail, tick a few rows, type a note in a feedback box,
+then hit **Copy for Claude** at the bottom to see the Markdown it hands back. Ticks and notes
+survive a reload, because they live in `localStorage` keyed by the brief's date.
+
+Two things behave differently there than in your own copy, and both are correct. The `TASKS.md`
+and `DELEGATED.md` chips are `obsidian://` links into a vault you do not have, so they will not
+resolve. And the hero points at a URL that deliberately 404s, so the page falls through to a
+National Gallery painting and swaps the credit line to match — that is the fallback chain
+working, not a broken demo.
+
+The content is invented: initials rather than names, fictional ticket keys and a fictional
+GitHub org. It is the shape of a real morning, not anybody's actual one.
 
 ---
 
@@ -112,6 +122,18 @@ Each morning the run syncs your two Markdown files, writes a `content.json`, ren
 overwrites yesterday, so you get an archive.
 
 `build.py` fails loudly on an unfilled slot rather than shipping a broken page.
+
+The demo page is built the same way from the same example and committed, so GitHub Pages can
+serve it. Re-render it after any change to `build.py` or `shell.html`:
+
+```sh
+cd daily-brief
+python3 -c "import json,build;open('../docs/index.html','w').write(build.build(json.load(open('examples/content-example.json')),cfg={}))"
+```
+
+`cfg={}` is the whole point of that line: it renders with no `config.json` at all, so your vault
+name, Slack team id and issue-tracker host cannot be baked into a tracked file. The push hook
+would catch it, but not needing to be caught is better.
 
 ## Quick start
 
