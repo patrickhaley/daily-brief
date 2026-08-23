@@ -1,4 +1,4 @@
-![The Daily Brief](assets/daily-brief-header.jpg)
+![The Daily Brief](assets/readme-header.jpg)
 
 # Daily Brief
 
