@@ -1,0 +1,21 @@
+#!/bin/sh
+# Last line of defence: scan every commit being pushed, not just the last one.
+# A commit made with --no-verify, or on another machine, is still caught here.
+root=$(git rev-parse --show-toplevel)
+status=0
+z=0000000000000000000000000000000000000000
+
+while read -r _local_ref local_sha _remote_ref remote_sha; do
+  [ "$local_sha" = "$z" ] && continue          # branch deletion, nothing to scan
+  if [ "$remote_sha" = "$z" ]; then
+    # new branch: scan what it adds relative to whatever the remote already has
+    base=$(git for-each-ref --format='%(objectname)' refs/remotes | head -1)
+    range=${base:+$base..$local_sha}
+    range=${range:-$local_sha}
+  else
+    range="$remote_sha..$local_sha"
+  fi
+  python3 "$root/scripts/scan-secrets.py" --range "$range" || status=1
+done
+
+exit $status

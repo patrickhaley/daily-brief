@@ -117,9 +117,24 @@ files are just Markdown — but the `obsidian://` deep links in the source chips
    ```sh
    cd daily-brief && cp config.json.example config.json
    ```
-3. **Seed your two Markdown files** from `templates/TASKS.example.md` and
+3. **Turn on the commit hooks**, in your clone of this repo — the vault copy from step 1 is not
+   a git repo, so this applies to the clone you would actually push from. Cloning does not
+   install git hooks: they sit inert in `.githooks/` until you point git at them, so this is a
+   real step, not a formality. Run it from the repo root, before your `config.json` has anything
+   in it worth leaking:
+
+   ```sh
+   cd "$(git rev-parse --show-toplevel)"
+   git config core.hooksPath .githooks
+   python3 scripts/scan-secrets.py --all      # audit what is already tracked
+   ```
+
+   From here a commit or push carrying an API key, token, password, email address or one of your
+   own hostnames is refused. Verify any time with `git config core.hooksPath`, which should print
+   `.githooks`. See [Privacy](#privacy) for what it looks for.
+4. **Seed your two Markdown files** from `templates/TASKS.example.md` and
    `templates/DELEGATED.example.md`, at the paths named in `config.paths`.
-4. **Check it renders** before wiring up any schedule:
+5. **Check it renders** before wiring up any schedule:
 
    ```sh
    cd daily-brief
@@ -128,9 +143,9 @@ files are just Markdown — but the `obsidian://` deep links in the source chips
 
    The hero image will fall back to the blurred wash — the example points at a URL that does not
    exist, on purpose. Everything else should look finished.
-5. **Create the scheduled task** with the prompt in `task-prompt.md`. Weekdays, early enough to
+6. **Create the scheduled task** with the prompt in `task-prompt.md`. Weekdays, early enough to
    finish before you start.
-6. **Open it automatically.** Add the output folder's newest file to your login items or a
+7. **Open it automatically.** Add the output folder's newest file to your login items or a
    startup tab. This matters more than any single section: a brief you have to remember to open is
    a brief you read twice a week.
 
@@ -229,6 +244,15 @@ The two Markdown files are the most sensitive thing here, and they stay local. N
 repository is uploaded anywhere; the brief is a file on your disk. If you fork this and push your
 own copy, note that `.gitignore` already excludes your `config.json`, your `content.json` and your
 rendered briefs — all three are full of your actual working life.
+
+A commit hook backs that up, because one careless paste undoes the whole arrangement — step 3 of
+the Quick start turns it on, and it stays off until you do.
+
+`scripts/scan-secrets.py` refuses any commit — and any push, so `--no-verify` does not slip
+through — carrying an API key, token, password, private key, email address or home-directory
+path. It also learns your own hostnames and ids by diffing your `config.json` against
+`config.json.example`, so filling that file in is what teaches it what to keep quiet about. A
+deliberate placeholder is exempted with `allowlist-secret` on the line.
 
 ## License
 
