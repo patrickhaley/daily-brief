@@ -35,10 +35,12 @@ hook files and none of the enforcement. Check before relying on it, and offer to
 answer is empty:
 
 ```sh
-git config core.hooksPath                  # must print .githooks
-git config core.hooksPath .githooks        # if it does not
-python3 scripts/scan-secrets.py --all      # audit everything already tracked
+git config core.hooksPath        # must print .githooks
+./scripts/install-hooks.sh       # if it does not: installs, verifies, then audits
 ```
+
+`core.hooksPath` is set relative, so one install covers the clone and every worktree of it. A
+second clone is a second install, and has no enforcement until it has had one.
 
 Do not treat the hooks' existence as proof they are active, and do not disable them to get a
 commit through. If one blocks you, the finding is the problem, not the hook.
