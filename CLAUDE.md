@@ -102,11 +102,16 @@ python3 build.py examples/content-example.json /tmp/brief.html && open /tmp/brie
 
 # render the smallest valid content.json — catches missing-key regressions
 python3 build.py examples/content-example-minimal.json /tmp/brief-min.html
+
+# re-render the committed demo page. cfg={} renders with NO config.json, so a local one
+# cannot bake a vault name, Slack team id or issue-tracker host into a tracked file
+python3 -c "import json,build;open('../docs/index.html','w').write(build.build(json.load(open('examples/content-example.json')),cfg={}))"
 ```
 
 `build.py` refuses to write a page with an unsubstituted placeholder left in it, so a successful
-render is the pass condition. The example hero URL deliberately 404s — falling back to the
-blurred wash is correct, not a bug.
+render is the pass condition. Both of the example's hero URLs deliberately 404, so the page falls
+through to a National Gallery painting and swaps the credit line to the painter — that is the
+chain working, not a bug. The blurred wash sits behind it as the last resort.
 
 ## Architecture
 
@@ -151,6 +156,21 @@ account.
 `footer_sources()` collapses `tasks` + `delegated` into one reader-facing name, and the footer is
 generated from `sources_used` alone — never a fixed list, so a dead source drops out of it
 automatically.
+
+### The demo page is generated, never hand-edited
+
+`docs/index.html` is `examples/content-example.json` rendered by `build.py`, committed so GitHub
+Pages can serve it at `/`. It is a build artifact that happens to be tracked: **never edit it
+directly**, and re-render it in the same commit as any change to `build.py`, `shell.html` or that
+example, or the live demo starts lying about what the code does. `docs/.nojekyll` stops Pages
+running the file through Jekyll.
+
+Render it with `cfg={}`, never with the plain CLI, because the CLI picks up whatever
+`config.json` sits beside `build.py` — and that file is exactly the account-specific one this
+repo works hardest to keep out of commits.
+
+The example is deliberately the demo's only source, so the two cannot disagree. Change the
+example and the demo changes with it.
 
 ### Sections are data
 
@@ -213,7 +233,13 @@ gets opened in front of other people.
 
 ## Verifying a change
 
-There is no test suite. After touching `build.py` or `shell.html`, render both examples and open
-the result: the hero marginalia centred, every item title linked, source chips present and sized,
-feedback boxes collapsed, and ticking a row producing well-formed Markdown from **Copy for
-Claude**. The delivery checklist in `SPEC.md` is the fuller version the daily run uses.
+There is no test suite. After touching `build.py` or `shell.html`, re-render `docs/index.html`
+too, then render both examples and open the result: the hero marginalia centred, a painting in the
+hero with the painter credited beside the standfirst, source chips present and sized, feedback
+boxes collapsed, and ticking a row producing well-formed Markdown from **Copy for Claude**.
+
+Item titles are linked wherever the item has an `href`. The full example leaves exactly one
+without one — the Intercom row in New updates — because `intercom` has no default URL, and an
+unlinked title is what that genuinely looks like. Do not "fix" it by inventing a URL.
+
+The delivery checklist in `SPEC.md` is the fuller version the daily run uses.
