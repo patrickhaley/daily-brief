@@ -132,14 +132,15 @@ files are just Markdown — but the `obsidian://` deep links in the source chips
 3. **Turn on the commit hooks**, in your clone of this repo — the vault copy from step 1 is not
    a git repo, so this applies to the clone you would actually push from. Cloning does not
    install git hooks: they sit inert in `.githooks/` until you point git at them, so this is a
-   real step, not a formality. Run it from the repo root, before your `config.json` has anything
-   in it worth leaking:
+   real step, not a formality. Run it before your `config.json` has anything in it worth
+   leaking:
 
    ```sh
-   cd "$(git rev-parse --show-toplevel)"
-   git config core.hooksPath .githooks
-   python3 scripts/scan-secrets.py --all      # audit what is already tracked
+   ./scripts/install-hooks.sh
    ```
+
+   That points git at `.githooks/`, makes both hooks executable, and audits what is already
+   tracked. It is safe to re-run, and one run covers every worktree of the clone.
 
    From here a commit or push carrying an API key, token, password, email address or one of your
    own hostnames is refused. Verify any time with `git config core.hooksPath`, which should print
