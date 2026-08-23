@@ -25,12 +25,16 @@ a{color:inherit;text-decoration:none}
 .hero{position:relative;aspect-ratio:2.18/1;overflow:hidden;background:{{HERO_BG_CSS}} center/cover no-repeat}
 .hero img{display:block;width:100%;height:100%;object-fit:cover;position:relative;z-index:1}
 .hero::after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 50% 46%,rgba(20,24,18,.42) 0%,rgba(20,24,18,.16) 46%,transparent 72%)}
+/* A painting was not composed to carry a masthead the way a generated image was,
+   so when one is showing the hero takes a heavier scrim. build.py sets .art up
+   front when the painting is the hero; the img onerror sets it on the way down. */
+.hero.art::after{background:radial-gradient(ellipse at 50% 44%,rgba(18,22,16,.60) 0%,rgba(18,22,16,.34) 50%,rgba(18,22,16,.08) 78%)}
 .hero h1{position:absolute;left:0;right:0;top:31%;margin:0;z-index:2;text-align:center;font-family:var(--serif);font-weight:600;
  font-size:74px;line-height:.94;color:#FBF6E4;letter-spacing:-.015em;text-shadow:0 3px 26px rgba(18,22,16,.55)}
 .hero h1 .the{display:block;font-size:38px;font-style:italic;letter-spacing:0;margin-bottom:-8px}
 .capline{display:flex;justify-content:space-between;align-items:flex-start;gap:30px;margin:11px 2px 0}
 .standfirst{font-family:var(--serif);font-style:italic;font-size:16.5px;line-height:1.6;color:var(--ink2);margin:0;max-width:600px}
-.credit{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:10.5px;letter-spacing:.02em;color:var(--ink3);text-align:right;flex:none;padding-top:3px;line-height:1.5}
+.credit{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:10.5px;letter-spacing:.02em;color:var(--ink3);text-align:right;flex:none;padding-top:3px;line-height:1.5;white-space:pre-line}
 
 section{display:grid;grid-template-columns:196px 1fr;gap:0 34px;padding:42px 0 0}
 .slabel{font-family:var(--serif);font-style:italic;font-size:20px;color:var(--ink);padding-top:1px}
@@ -160,7 +164,7 @@ footer .love span{width:15px;height:15px;border:1px solid var(--ink3);border-rad
     <div class="masthead">
       <div class="marginalia marg-l">{{MARG_L}}</div>
       <div class="marginalia marg-r">{{MARG_R}}</div>
-      <div class="hero">
+      <div class="hero{{HERO_CLASS}}">
         {{HERO_IMG}}
         <h1><span class="the">The</span>{{MASTHEAD}}</h1>
       </div>
