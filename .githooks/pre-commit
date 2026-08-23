@@ -1,0 +1,5 @@
+#!/bin/sh
+# Block credentials and identifying details from entering a commit.
+# Install: git config core.hooksPath .githooks
+# Bypass only when you are certain: git commit --no-verify
+exec python3 "$(git rev-parse --show-toplevel)/scripts/scan-secrets.py"

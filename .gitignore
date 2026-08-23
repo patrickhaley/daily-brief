@@ -12,3 +12,22 @@ daily-brief/config.json
 # Python
 __pycache__/
 *.pyc
+
+# Credentials. Nothing matching these should ever be tracked; scripts/scan-secrets.py
+# is the backstop for anything that slips past the patterns below.
+.env
+.env.*
+*.env
+secrets.json
+credentials.json
+service-account*.json
+*.pem
+*.key
+*.p12
+*.pfx
+*.keystore
+id_rsa*
+id_ed25519*
+.netrc
+.htpasswd
+*token*.txt
