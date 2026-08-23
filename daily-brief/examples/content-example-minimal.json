@@ -1,0 +1,55 @@
+{
+  "date": "2026-03-13",
+  "title": "The Friday Brief — 13 Mar 2026",
+  "masthead": "Friday Brief",
+  "marg_left": "13 MAR 2026",
+  "marg_right": "07:00 AM",
+  "standfirst": "A quiet one. Nothing is owed today, and the only meeting is the one you run.",
+  "credit": ["Generated for this brief, 13 Mar 2026."],
+
+  "hero": {},
+
+  "push": {
+    "title": "Write the migration hand-off note while the day is empty",
+    "body": "The three validation owners are named but nobody has the exit criteria in writing. An empty Friday is the cheapest time this gets done.",
+    "srcs": ["delegated"],
+    "seed": "Draft the migration validation hand-off note I owe three owners.\n\nWhere to look: DELEGATED.md items D1 to D3 in the PersonalOS Obsidian vault, and Jira stories PLAT-2456, PLAT-2457 and PLAT-2458.\n\nGive me one short message per owner: what they own, the exit criteria that count as done, and the return date. You can reach Jira and my vault."
+  },
+
+  "sections": [
+    {
+      "label": "Top to-dos",
+      "sub": "Tick when done",
+      "srcs": ["tasks"],
+      "items": [
+        {
+          "id": "t1",
+          "act": "done",
+          "src": "TASKS.md",
+          "title": "Send the three hand-off notes",
+          "href": "obsidian://open?vault=PersonalOS&file=DELEGATED.md",
+          "body": "Named owners, exit criteria, return date. Fifteen minutes, and it unblocks the April gate."
+        }
+      ]
+    },
+    {
+      "label": "Gone quiet",
+      "sub": "Tick what to drop",
+      "srcs": ["tasks"],
+      "items": []
+    }
+  ],
+
+  "sources_used": ["cal", "jira", "tasks", "delegated"],
+
+  "day_srcs": ["cal"],
+  "day": [
+    {
+      "t": "8:30a",
+      "n": "Platform Standup",
+      "h": "Platform Standup — 8:30 to 9:00 AM",
+      "p": "You run this. One item: confirm the three validation owners have their notes.",
+      "seed": null
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+# macOS
+.DS_Store
+
+# Your actual brief content and output. The template ships examples/ instead.
+daily-brief/content.json
+brief-*.html
+task-sync-*.md
+
+# Your own settings. Copy config.json.example to config.json and edit that.
+daily-brief/config.json
+
+# Python
+__pycache__/
+*.pyc

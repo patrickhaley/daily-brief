@@ -1,0 +1,45 @@
+{
+  "_comment": "Everything in this file is yours to change. build.py reads it; nothing here is required. Delete a key to fall back to the built-in default.",
+
+  "vault": "PersonalOS",
+  "vault_label": "vault",
+  "timezone": "America/New_York",
+  "link_mode": "app",
+  "slack_team": null,
+
+  "paths": {
+    "package": "Routines/daily-brief",
+    "briefs": "Work/Briefs",
+    "tasks": "TASKS.md",
+    "delegated": "DELEGATED.md",
+    "voice": "Memory/Reference/voice-principles.md"
+  },
+
+  "sources": {
+    "jira": null,
+    "intercom": null,
+    "gmail": "https://mail.google.com/mail/u/0/#inbox",
+    "gchat": "https://chat.google.com/",
+    "github": "https://github.com/pulls/review-requested",
+    "drive": "https://drive.google.com/drive/recent",
+    "circleback": "https://app.circleback.ai/meetings",
+    "slack": "slack://open",
+    "cal": "https://calendar.google.com/calendar/r/day/{y}/{m}/{d}"
+  },
+
+  "theme": {
+    "paper": "#F4F2F0",
+    "card": "#FBFAF9",
+    "ink": "#1A1818",
+    "ink_soft": "#6B6560",
+    "line": "#B0A091",
+    "rule": "#DDD8D3",
+    "accent": "#B4342A",
+    "accent_hover": "#93281F",
+    "serif": "'Fraunces', Georgia, serif",
+    "sans": "-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif"
+  },
+
+  "footer_lead": "Made for you by <b>Claude</b> using <i>your</i>",
+  "apply_note": "Apply the above: edit the referenced files in the {vault} vault, update or comment on the tickets named, and tell me what you changed. Ask before anything irreversible."
+}

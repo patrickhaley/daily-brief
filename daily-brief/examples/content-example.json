@@ -1,0 +1,253 @@
+{
+  "date": "2026-03-12",
+  "vault": "PersonalOS",
+  "link_mode": "app",
+  "slack_team": null,
+  "title": "The Thursday Brief — 12 Mar 2026",
+  "masthead": "Thursday Brief",
+  "marg_left": "12 MAR 2026",
+  "marg_right": "07:00 AM",
+  "standfirst": "Two standups, then the afternoon is open. The migration hand-off you owe Dana by Friday has a forum at 8:30.",
+  "credit": [
+    "Morning clusters, open ground.",
+    "Generated for this brief, 12 Mar 2026."
+  ],
+
+  "hero": {
+    "src": "https://example.invalid/hero-2026-03-12_min.webp",
+    "fallback_src": "https://example.invalid/hero-2026-03-12.png",
+    "bg_tint": "#3A4942"
+  },
+
+  "push": {
+    "title": "Turn \"someone should test the migration\" into named owners, at 8:30",
+    "body": "Three validation hand-offs in DELEGATED.md were never actually handed over, and all three gate the April demo. Priya already scoped them as tickets, so hand [PLAT-2456](https://acme.atlassian.net/browse/PLAT-2456) and [PLAT-2457](https://acme.atlassian.net/browse/PLAT-2457) to people, not a category to a team.",
+    "srcs": ["delegated", "jira"],
+    "feedback_hint": "Wrong call? Different owner? Say so and I will redo the hand-off.",
+    "seed": "Turn the three migration validation hand-offs on my delegated list into something I can actually hand over at the Platform Standup this morning. All three sit as team names with no return date, and all three gate the April demo.\n\nWhere to look: DELEGATED.md items D1 to D4 and TASKS.md, both in the PersonalOS Obsidian vault. In Jira, epic PLAT-2443 (Reporting Rewrite) and its open validation stories PLAT-2456 (Accounting) and PLAT-2457 (Contacts), plus PLAT-2458 (deployment hardening), which is the gate immediately before sign-off. Also DATA-412 (staging sync failures), which may be the same root cause as the blocker on the contacts story.\n\nFor each hand-off give me a named person rather than a team, the exit criteria that count as done, a return date, and the one thing that would block that person on day one. Then draft the short message I send each owner straight after the standup. Last, tell me what to say to Dana about the production URL I owe by Friday.\n\nYou can reach Jira, Slack, Gmail, Google Drive, Circleback and my vault."
+  },
+
+  "sections": [
+    {
+      "label": "Top to-dos",
+      "sub": "Tick when done",
+      "srcs": ["tasks", "gmail", "intercom"],
+      "feedback_hint": "Already handled? Wrong priority? Something missing that should have been here?",
+      "items": [
+        {
+          "id": "t1",
+          "act": "done",
+          "src": "TASKS.md",
+          "ref": "DATA-412",
+          "title": "Kill the warehouse token alarm, it looks stale",
+          "href": "https://acme.atlassian.net/browse/DATA-412",
+          "glyphs": ["cal", "jira"],
+          "avatars": [{ "i": "PN", "url": "https://example.invalid/avatar-pn.png" }],
+          "body": "DATA-412 says the service account moved to key-pair auth on Mar 9 and the break-glass token runs to 2027. The ticket's own words: \"not urgent, nothing expires.\" Confirm, then delete the recurring reminder."
+        },
+        {
+          "id": "t2",
+          "act": "done",
+          "src": "TASKS.md",
+          "ref": "Support Specialist offer",
+          "title": "Give Lena the go-ahead on the Support Specialist offer",
+          "href": "https://mail.google.com/mail/u/0/#inbox",
+          "glyphs": ["gmail"],
+          "avatars": [{ "i": "LF", "tint": true }],
+          "body": "She is progressing approval to offer and waiting on your sign-off. One line takes you off the critical path of a hire. Figures kept off this page."
+        },
+        {
+          "id": "t3",
+          "act": "done",
+          "src": "TASKS.md",
+          "ref": "Support SLA: two accounts",
+          "title": "Break the silence with two accounts past SLA",
+          "glyphs": ["intercom"],
+          "avatars": [{ "i": "A1" }, { "i": "A2", "tint": true }],
+          "body": "One account is ten days into a pipeline report question, another six days into an export that will not generate. A holding reply resets both."
+        }
+      ]
+    },
+    {
+      "label": "New updates",
+      "sub": "Moved without you · tick what you already knew",
+      "srcs": ["jira", "slack", "github"],
+      "feedback_hint": "Context I got wrong, or an update that matters more than these?",
+      "items": [
+        {
+          "id": "u1",
+          "act": "seen",
+          "src": "TASKS.md",
+          "ref": "DATA-412",
+          "title": "Priya cleared her own blocker on the service-account migration",
+          "tag": "DATA-412",
+          "href": "https://acme.atlassian.net/browse/DATA-412",
+          "glyphs": ["jira"],
+          "avatars": [{ "i": "PN", "url": "https://example.invalid/avatar-pn.png" }],
+          "body": "Raised Mar 9, and she moved the account to key-pair auth the same day. Now filed as hygiene, not urgency."
+        },
+        {
+          "id": "u2",
+          "act": "seen",
+          "src": "TASKS.md",
+          "ref": "PR #412 client cap",
+          "title": "Marco capped the OAuth client leak in one region and flagged the rest",
+          "href": "https://github.com/acme-co/platform/pull/412",
+          "glyphs": ["github", "slack"],
+          "avatars": [{ "i": "MB", "tint": true }],
+          "body": "The region hit 100 registered clients and blocked every new sign-in. [PR #412](https://github.com/acme-co/platform/pull/412) adds a TTL. The other two regions and staging will hit the same wall."
+        },
+        {
+          "id": "u3",
+          "act": "seen",
+          "src": "TASKS.md",
+          "ref": "PLAT-2612",
+          "title": "The composer moved to code review without your answer",
+          "tag": "PLAT-2612",
+          "href": "https://acme.atlassian.net/browse/PLAT-2612",
+          "glyphs": ["jira", "slack"],
+          "avatars": [{ "i": "JK", "tint": true }],
+          "body": "Priya said she was blocked on your call over the activity buttons and the invite checkbox. It is now with Jo in code review, so someone decided for you."
+        }
+      ]
+    },
+    {
+      "label": "Owed to you",
+      "sub": "Tick what's no longer true",
+      "srcs": ["delegated", "jira"],
+      "feedback_hint": "New owner, new date, or a line to rewrite in DELEGATED.md.",
+      "items": [
+        {
+          "id": "o1",
+          "act": "stale",
+          "src": "DELEGATED.md",
+          "ref": "D1-D4 chase dates",
+          "title": "Every chase date on your delegated list has passed",
+          "href": "obsidian://open?vault=PersonalOS&file=DELEGATED.md",
+          "avatars": [{ "i": "PN" }],
+          "body": "D1 was due Feb 27, chase date Feb 26, still reads \"sent, no reply yet.\" D2, D3 and D4 all read \"not yet handed over\" against a meeting held Feb 24."
+        },
+        {
+          "id": "o2",
+          "act": "stale",
+          "src": "DELEGATED.md",
+          "ref": "D3 blocked on staging sync",
+          "title": "D3 is blocked before it starts",
+          "href": "obsidian://open?vault=PersonalOS&file=DELEGATED.md",
+          "glyphs": ["jira"],
+          "avatars": [{ "i": "MB", "tint": true }],
+          "body": "Contact merge validation needs records syncing in staging, and they are not. [DATA-412](https://acme.atlassian.net/browse/DATA-412) may be the same root cause."
+        }
+      ]
+    },
+    {
+      "label": "Gone quiet",
+      "sub": "Tick what to drop",
+      "srcs": ["tasks", "gmail"],
+      "feedback_hint": "Drop it, do it, or delegate it? Tell me which and I will edit TASKS.md.",
+      "items": [
+        {
+          "id": "q1",
+          "act": "stale",
+          "src": "TASKS.md",
+          "ref": "Validation environment",
+          "title": "The validation environment you promised to delegate",
+          "tag": "34 days",
+          "href": "obsidian://open?vault=PersonalOS&file=TASKS.md",
+          "body": "You told Dana on Feb 6 you would delegate this. It has not moved. This is the one that was said out loud in the conversation about your scope."
+        },
+        {
+          "id": "q2",
+          "act": "stale",
+          "src": "TASKS.md",
+          "ref": "Annual statement signature",
+          "title": "The annual company statement",
+          "tag": "37 days · e-signature",
+          "href": "obsidian://open?vault=PersonalOS&file=TASKS.md",
+          "body": "Asked Feb 3, re-reminded Feb 10, silent since. It is a signature, not a project."
+        },
+        {
+          "id": "q3",
+          "act": "stale",
+          "src": "TASKS.md",
+          "ref": "AI tooling rollout",
+          "title": "AI tooling for the regional team",
+          "tag": "Sam's third ask",
+          "href": "obsidian://open?vault=PersonalOS&file=TASKS.md",
+          "body": "He has stopped scoping by office and now suggests opening it to everyone. Three asks with no reply reads as a no you have not said."
+        }
+      ]
+    }
+  ],
+
+  "sources_used": ["cal", "gmail", "gchat", "jira", "github", "circleback", "tasks", "delegated"],
+
+  "notices": [
+    "**Slack** returned an auth error twice, so mentions and DMs are not represented this morning. Two items in New updates are sourced from Jira and GitHub only."
+  ],
+
+  "day_srcs": ["cal"],
+  "day": [
+    {
+      "t": "all day",
+      "n": "Warehouse token alarm",
+      "soft": true,
+      "who": [{ "i": "IT", "tint": true }, { "i": "PN" }],
+      "h": "Service-account access token expires",
+      "p": "A recurring IT calendar marker, not a meeting. DATA-412 says the account moved to key-pair auth on Mar 9, so this alarm is probably left over.",
+      "seed": "Check whether the reporting service account's access token is still load-bearing before I regenerate anything, because the recurring calendar reminder may simply be stale.\n\nWhere to look: Jira issue DATA-412 (complete service-account migration) and its predecessor DATA-208. DATA-412 records that the warehouse moved to RSA key-pair authentication on 9 March, documented in docs/warehouse_auth.md, and that the break-glass token runs to 9 March 2027. In the warehouse, check the reporting user for auth type, key-pair status and whether the network policy is still attached.\n\nTell me either that today's expiry is a non-event and I can delete the recurring reminder, or exactly which dashboards still need reconnecting today. You can reach Jira, the warehouse, Gmail, Slack and the web. Finish with a short answer I can paste into the Platform Standup."
+    },
+    {
+      "t": "8:30a",
+      "n": "Platform Standup",
+      "who": [{ "i": "PN" }, { "i": "MB", "tint": true }, { "i": "SO" }, { "i": "JK", "tint": true }],
+      "h": "Platform Standup — 8:30 to 9:00 AM",
+      "p": "You organize this, with Priya and the vendor team. Natural forum for the production URL and the OAuth client cap still open in two regions and staging.",
+      "seed": "Build me an agenda for the Platform Standup I run this morning with Priya and the vendor team. Three things need to land.\n\nFirst, the production URL for the new reporting app, which I committed to Dana by end of this week. Second, the OAuth client registration cap: one region hit its hard limit of 100 registered clients and blocked every new sign-in, fixed with a TTL expiry in pull request 412 on acme-co/platform, and the other two regions and staging will hit the same wall. Third, naming who owns each remaining validation category so testing can actually start.\n\nWhere to look: Jira epic PLAT-2443 and its open children PLAT-2456, PLAT-2457 and PLAT-2458. On GitHub, pull requests 412 and 409 on acme-co/platform. Recent history in the #platform Slack channel.\n\nYou can reach Jira, Slack, GitHub and the web. Give me a short agenda with a named owner and a date against each item."
+    },
+    {
+      "t": "10:00a",
+      "n": "Product Standup",
+      "who": [{ "i": "PN" }, { "i": "JK", "tint": true }],
+      "h": "Product Standup — 10:00 to 10:30 AM",
+      "p": "Priya's meeting, with Jo. The composer has already moved to code review, so find out whether your two design answers still matter or the decision was made without you.",
+      "seed": "Get me ready for the Product Standup with Priya and Jo. Two things sit with me and both may have moved on without me.\n\nFirst, the six-field duplicate matching criteria I was asked to confirm before the regional rollout, now that the production fix for the merge stored procedure is in. Second, the two design and system mismatches on the composer: activity buttons the design shows but the system cannot store, and a calendar invite checkbox that does nothing on a phone call. That ticket has since moved to code review, so tell me what was actually decided and whether it matches what I would have chosen.\n\nWhere to look: Jira PLAT-2612 (composer) including its comments and history, PLAT-858 (duplicate merge), epic PLAT-1191 (Duplicate Handling), and DATA-412. Search Slack for those ticket keys to find the threads.\n\nYou can reach Jira, Slack and the web. Give me a position on each, short enough to say out loud."
+    },
+    {
+      "t": "12:30p",
+      "n": "Regional Standup",
+      "soft": true,
+      "who": [{ "i": "SO" }, { "i": "LF", "tint": true }],
+      "h": "Regional Standup — 12:30 to 12:55 PM",
+      "p": "Sam's standup. You are still tentative while nine others have accepted, and the April versus May launch message is still unreconciled.",
+      "seed": "Help me settle the launch date message before the Regional Standup today. Dana and the Weekly Exec Standup both heard April for the CRM release. The regional network update on 4 March told customers May for the CRM and June for the AI features. Two audiences have two different dates and they will compare notes.\n\nWhere to look: Jira epics PLAT-2227 and PLAT-2237 (both in testing) and PLAT-2612 (composer), for what the delivery evidence actually supports. Circleback for the Weekly Exec Standup and my 1:1 with Dana. Gmail for the regional network update that went out.\n\nWork out which date the evidence supports, then draft the short correction I say at the standup and the note that goes to the regional network. Plain text, no dashes. You can reach Jira, Gmail, Slack, Circleback and the web."
+    },
+    {
+      "t": "4:30p",
+      "n": "🚗 School pick-up",
+      "soft": true,
+      "who": [],
+      "h": "School pick-up — 4:30 to 5:00 PM",
+      "p": "A personal block, on the same rail as the standups so it cannot be double-booked. Your own note on the event: be present and concise.",
+      "seed": null
+    },
+    {
+      "t": "6:00p",
+      "n": "Family time",
+      "soft": true,
+      "who": [],
+      "h": "Family time — 6:00 to 9:00 PM",
+      "p": "Marked out of office. The evening vendor call starts the minute this block ends, so there is no gap between the two.",
+      "seed": null
+    },
+    {
+      "t": "tomorrow",
+      "n": "Board questions due",
+      "soft": true,
+      "who": [{ "i": "DR" }],
+      "h": "Quarterly board report — questions due close of business tomorrow",
+      "p": "Not on today's calendar, but the board meets Mar 17. Reading it today is the difference between a useful question and a visible one.",
+      "seed": "Help me write the questions I submit on the quarterly board report, due close of business tomorrow, ahead of the board meeting on 17 March.\n\nWhere to look: the Q1 2026 board report in Google Drive, sent to the exec distribution on 9 March. My own quarterly IT board material for the same period. Jira for delivery evidence against what the report claims, and the warehouse for anything numeric I could be challenged on.\n\nPropose questions worth asking rather than merely visible: places where the numbers and the narrative disagree, risks nobody has named, and anything in technology or spend the board will ask me about first. Four or five questions, each with one line on why I am asking it. You can reach Google Drive, Gmail, Jira, the warehouse and the web."
+    }
+  ]
+}
