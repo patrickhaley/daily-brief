@@ -10,7 +10,8 @@ Throughout, **the reader** means the person this brief is for.
 
 Package: the `paths.package` folder in the vault — `build.py`, `shell.html`, `config.json`
 (copied from `config.json.example`),
-`fraunces-600.b64`, `hero-fallback.b64`, this file, and `content.schema.md`.
+`fraunces-600.b64`, `hero-fallback.b64`, `nga-paintings.json`, this file, and
+`content.schema.md`.
 
 ---
 
@@ -20,7 +21,7 @@ Change these here, not in the scheduled task prompt.
 
 | Switch | Default | Notes |
 |---|---|---|
-| `HERO` | `painting` | `painting` generates a themed image via an image MCP (costs credits). `drawing` renders a free line-drawing SVG of the day instead. `off` uses the neutral wash only. |
+| `HERO` | `painting` | `painting` generates a themed image via an image MCP (costs credits). `drawing` renders a free line-drawing SVG of the day instead. `off` sets `hero.nga: false` and uses the neutral wash only. A National Gallery painting backs up the first two. |
 | `MAX_TODOS` | 3 | Top to-dos. Never pad to reach it. |
 | `MAX_PER_SECTION` | 3 | New updates, Owed to you, Gone quiet. |
 | `NOTIFY` | `always` | Push every morning. `sharp-only` notifies only when something is time-critical. |
@@ -210,11 +211,19 @@ and always `Absolutely no text, no lettering, no words, no numbers, no signature
 Set `hero.src` to the small web-optimised URL and `hero.fallback_src` to the full-size one.
 
 Do **not** try to download the image. Egress from the run container is usually blocked for image
-CDNs. The image is hotlinked; `hero-fallback.b64` covers the failure case, and `build.py` wires
-an `onerror` chain from `src` to `fallback_src` to the wash.
+CDNs. The image is hotlinked, and `build.py` wires an `onerror` chain from `src` to
+`fallback_src` to a real painting to the wash.
 
 The credit line is honest: what the scene shows, then "Generated for this brief, <date>". Never
 invent an artist or a year.
+
+**The painting is not yours to choose.** `build.py` takes it from `nga-paintings.json`, a
+shortlist of open-access works from the National Gallery of Art, rotating by the brief's date.
+Nothing to write into `content.json`, nothing to look up, nothing to download — the image is
+hotlinked from the Gallery like the generated one. It also stands in as the hero outright on a
+morning that produced no image at all, and then it carries its own credit: painter, title, year.
+
+Set `hero.nga: false` only for `HERO=off`, where the neutral wash is the point.
 
 `HERO=drawing`: emit an inline SVG in `hero.svg` — one unbroken terrain stroke edge to edge,
 elevation = meeting load, dots on the line sized by weight, hollow dots for optional or

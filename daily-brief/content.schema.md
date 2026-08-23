@@ -24,6 +24,7 @@ place for your permanent settings.
     "src": "https://…_min.webp",     // omit to fall back to svg / wash
     "fallback_src": "https://….png", // swapped in by onerror
     "svg": "<svg …>",                // used when src is absent (HERO=drawing)
+    "nga": true,                     // optional; false drops the painting fallback (HERO=off)
     "bg_tint": "#3A4942",            // behind the wash
     "bg_b64": "…"                    // optional; defaults to hero-fallback.b64
   },
@@ -95,6 +96,11 @@ deliberate, because these fields carry calendar titles and meeting names straigh
 content. `[label](url)` link syntax works in item `body` fields only, not here. Image URLs
 (`hero.src`, `hero.fallback_src`, `avatars[].url`) must be `http(s)`; anything else is dropped
 and the monogram or the wash shows instead.
+
+**The hero degrades in four steps**: `hero.src`, then `hero.fallback_src`, then a painting from
+`nga-paintings.json`, then the wash. Only the first two are yours to write. `build.py` picks the
+painting by date and writes its own credit over `credit` when it shows, so do not describe a
+painting you have not seen. `"nga": false` removes that step; `hero.svg` replaces the whole chain.
 
 **Avatars**: pass `i` (initials) always, and `url` only where the source actually returns a real
 avatar image — some do, most do not. Without a URL the monogram renders. `tint: true` gives the

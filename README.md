@@ -102,6 +102,7 @@ daily-brief/
 ├── shell.html                # the page. all the CSS lives here
 ├── fraunces-600.b64          # embedded font, never read into context
 ├── hero-fallback.b64         # blurred wash so a failed image is not a hole
+├── nga-paintings.json        # National Gallery paintings the hero falls back to
 ├── templates/                # starting shapes for your tasks + delegated files
 └── examples/                 # known-good content.json to diff against
 ```
@@ -152,8 +153,8 @@ files are just Markdown — but the `obsidian://` deep links in the source chips
    python3 build.py examples/content-example.json /tmp/brief.html && open /tmp/brief.html
    ```
 
-   The hero image will fall back to the blurred wash — the example points at a URL that does not
-   exist, on purpose. Everything else should look finished.
+   The hero image will fall back to a painting — the example points at a URL that does not
+   exist, on purpose, so a first run exercises that path. Everything else should look finished.
 6. **Create the scheduled task** with the prompt in `task-prompt.md`. Weekdays, early enough to
    finish before you start.
 7. **Open it automatically.** Add the output folder's newest file to your login items or a
@@ -218,15 +219,22 @@ credits itself honestly ("Generated for this brief, 12 Mar 2026") rather than in
 and a year.
 
 Costs a few credits a day. `HERO=drawing` renders a free line drawing of the day's shape instead
-— one terrain stroke, elevation by meeting load. `HERO=off` uses the neutral wash. All three
-degrade to the wash if generation fails, so a bad morning is never a hole in the page.
+— one terrain stroke, elevation by meeting load. `HERO=off` uses the neutral wash.
+
+When the generated image does not load — or there was none that morning — the brief shows a real
+painting instead: 59 open-access works from the National Gallery of Art, in
+`nga-paintings.json`, rotating by date so you get a different one each morning and none repeats
+for two months. They are hotlinked from the Gallery, cost nothing, and are public domain under CC0.
+`build.py` swaps the credit line to the painter, title and year as it swaps the image, so the page
+never claims a Winslow Homer was generated for you. Behind all of it the blurred wash is still
+there as the last resort, so a bad morning is never a hole in the page.
 
 ## Honest downsides
 
 - It burns a lot of tokens. It reads a great deal to produce one page, and it is not instant.
 - It depends on your machine being awake if your vault is local. Fine most weekdays, useless when
   you are travelling.
-- The image costs credits, if you leave that switch on.
+- The image costs credits, if you leave that switch on. The paintings behind it do not.
 - It is an evening of iteration to make it feel like yours, not a five-minute setup. The stock
   version works; the version you would actually read every morning takes some tuning of `SPEC.md`.
 

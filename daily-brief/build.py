@@ -12,11 +12,13 @@ Three files, three jobs:
 Never paste the font base64 into a prompt or read fraunces-600.b64 into context;
 this script substitutes it from disk.
 """
-import html, json, pathlib, re, sys, urllib.parse
+import datetime, html, json, pathlib, re, sys, urllib.parse
 
 HERE = pathlib.Path(__file__).resolve().parent
 SEED_BASE = "https://claude.ai/new?q="
 SEED_TAIL = "&surface=cowork&composer=mini"
+# The day's painting is served straight from the National Gallery IIIF endpoint.
+NGA_IIIF = "https://api.nga.gov/iiif/%s/full/!1600,1600/0/default.jpg"
 
 # Fallbacks for anything config.json does not set. config.json wins; these keep a
 # missing or partial config from breaking the build.
@@ -42,6 +44,26 @@ def load_config():
         return {}
     cfg = json.loads(f.read_text())
     return {k: v for k, v in cfg.items() if not k.startswith('_')}
+
+
+def nga_painting(date):
+    """The day's painting from the bundled National Gallery shortlist.
+
+    Rotation is by ordinal date rather than a hash of it, so the list is walked in
+    order and nothing repeats until it has been all the way round. Returns a
+    (url, credit lines) pair, or None if nga-paintings.json is missing or empty.
+    """
+    f = HERE / 'nga-paintings.json'
+    if not f.exists():
+        return None
+    lst = (json.loads(f.read_text()) or {}).get('paintings') or []
+    if not lst:
+        return None
+    p = lst[datetime.date.fromisoformat(date).toordinal() % len(lst)]
+    # Three short lines, not one long one: the credit sits beside the standfirst and
+    # a wide credit squeezes it. The images are CC0, so this is courtesy, not duty.
+    return (NGA_IIIF % p['uuid'],
+            [p['artist'], p['title'], '%s \u00b7 National Gallery of Art' % p['year']])
 
 
 def theme_css(theme):
@@ -274,17 +296,45 @@ def build(content, cfg=None):
 
     hero = content.get('hero') or {}
     hero_src = safe_url(hero.get('src'))
-    if hero_src:
-        # The fallback URL rides in data-fb rather than being interpolated into the
-        # handler, so a hostile value cannot break out of the JS string.
-        fb = safe_url(hero.get('fallback_src'))
-        hero_img = (f'<img src="{e(hero_src)}" alt="Painted scene for today\'s brief" '
-                    f'data-fb="{e(fb)}" '
-                    'onerror="var f=this.dataset.fb;'
-                    'if(f&&!this.dataset.tried){this.dataset.tried=1;this.src=f}'
-                    'else{this.remove()}">')
+    credit = content.get('credit', [])
+    # A painting from the National Gallery shortlist backs up the generated image, and
+    # stands in for it on a morning that produced none. "nga": false opts out, which is
+    # what HERO=off sets, so "off" still means the neutral wash and nothing else.
+    nga = nga_painting(content['date']) if hero.get('nga', True) else None
+
+    hero_class = ''
+    if not hero_src and hero.get('svg'):
+        # HERO=drawing: the line drawing is the intent, not a hole to fill, so the
+        # painting stays out of its way and the wash sits behind it as before.
+        hero_img = hero['svg']
+    elif hero_src or nga:
+        if not hero_src:
+            # Nothing was generated today, so the painting is the hero rather than a
+            # fallback -- and it owns the credit line and the heavier scrim, which
+            # build.py sets here instead of leaving them to the handler below.
+            hero_src, credit = nga[0], nga[1]
+            nga = None
+            hero_class = ' art'
+        # Each candidate rides in a data attribute rather than being interpolated into
+        # the handler, so a hostile value cannot break out of the JS string. The handler
+        # walks data-fb1, data-fb2, ... and removes the image once they run out, which
+        # uncovers the wash. A candidate with a data-cN takes the credit line with it.
+        chain = [(u, None) for u in [safe_url(hero.get('fallback_src'))] if u]
+        if nga:
+            chain.append(nga)
+        attrs = ''
+        for i, (url, lines) in enumerate(chain, 1):
+            attrs += f'data-fb{i}="{e(url)}" '
+            if lines:
+                # a candidate with a credit is a painting, so it brings the scrim with it
+                attrs += f'data-c{i}="{e(chr(10).join(lines))}" '
+        hero_img = (f'<img src="{e(hero_src)}" alt="Painted scene for today\'s brief" {attrs}'
+                    'onerror="var d=this.dataset,n=(+d.n||0)+1,u=d[\'fb\'+n],c=d[\'c\'+n];'
+                    'd.n=n;if(!u){this.remove();return}this.src=u;if(!c)return;'
+                    'this.parentNode.classList.add(\'art\');'
+                    'var p=document.querySelector(\'.credit\');if(p)p.textContent=c">')
     else:
-        hero_img = hero.get('svg', '')
+        hero_img = ''
     wash = hero.get('bg_b64')
     if not wash:
         wf = HERE / 'hero-fallback.b64'
@@ -299,8 +349,9 @@ def build(content, cfg=None):
       '{{MASTHEAD}}':    e(content['masthead']),
       '{{HERO_BG_CSS}}': bg,
       '{{HERO_IMG}}':    hero_img,
+      '{{HERO_CLASS}}':  hero_class,
       '{{STANDFIRST}}':  e(content['standfirst']),
-      '{{CREDIT}}':      '<br>'.join(e(l) for l in content.get('credit', [])),
+      '{{CREDIT}}':      '<br>'.join(e(l) for l in credit),
       '{{PUSH_BODY}}':   push_body(content['push'], ctx),
       '{{PUSH_SRCS}}':   srcs(content['push'].get('srcs', ['delegated','jira']), ctx),
       '{{PUSH_SEED}}':   jslit(seed(content['push'].get('seed', ''))),
