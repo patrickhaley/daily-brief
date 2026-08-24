@@ -1,6 +1,7 @@
 # Daily Brief — run spec
 
-A scheduled task runs this on weekday mornings. Do both phases, in order, in one run.
+A scheduled task runs this on weekday mornings. Phase 1 runs as a delegated subagent; Phase 2
+runs in this session, in order, once Phase 1 returns.
 
 Everything account-specific lives in **`config.json`** — vault name, timezone, source URLs,
 palette. Read it first. Nothing in this file needs editing to make the brief work for a new
@@ -10,8 +11,8 @@ Throughout, **the reader** means the person this brief is for.
 
 Package: the `paths.package` folder in the vault — `build.py`, `shell.html`, `config.json`
 (copied from `config.json.example`),
-`fraunces-600.b64`, `hero-fallback.b64`, `nga-paintings.json`, this file, and
-`content.schema.md`.
+`fraunces-600.b64`, `hero-fallback.b64`, `nga-paintings.json`, this file, `content.schema.md`,
+and `findings.schema.md`.
 
 ---
 
@@ -28,6 +29,9 @@ Change these here, not in the scheduled task prompt.
 | `LOOKBACK_FALLBACK` | 72h | Used when there is no previous brief to look back from. |
 | `link_mode` | `app` | `app` points links at the desktop app where one exists (Slack). `web` keeps browser URLs. In `config.json`, overridable per day in `content.json`. |
 | `slack_team` | unset | The reader's Slack team id (`T…`). When set, Slack links deep-link straight to the channel in the app instead of going via `slack.com/app_redirect`. |
+| `PHASE1_MODEL` | `haiku` | The fastest/cheapest tier your harness offers. Phase 1 does no page-voice work, so cost and speed beat capability here. Change it here, never in the task prompt. |
+| `PROMISE_LOOKBACK` | 14d | Window Phase 1 scans the reader's own outbound messages for unkept promises. A promise older than this still surfaces if it is still unproven — see Phase 1. |
+| `SUPPORT_NETWORK_CAP` | 2 | Max items the support-inbox network-signal pass may contribute, so it cannot crowd out conversations already assigned to the reader. |
 
 Sections are optional. Drop any section the reader does not want by leaving it out of
 `content.json`; add one by adding an object to `sections`. `build.py` renders what it is given,
@@ -39,25 +43,88 @@ in the order it is given.
 
 The brief is only as good as the files under it, so sync before you read them.
 
+### Running Phase 1 as a subagent
+
+Phase 1 runs as a delegated subagent, never inline in this session. The reason is context
+hygiene, not cost: raw connector output — search results, thread contents, ticket payloads —
+must never sit in the context that goes on to write `content.json`. A cheaper model is a side
+benefit, not the point. Run it on `PHASE1_MODEL` (Switches); do not hardcode a model here.
+
+**It does not inherit this file by osmosis.** Tell it to read `SPEC.md` itself as its first act,
+before gathering anything — the Slack, issue-tracker, support-inbox, and meeting-notes rules
+below, and Verify before you list, apply to it exactly as written here, not by summary.
+
+It does everything below — gather, scan for promises, cross-reference, update `paths.tasks` and
+`paths.delegated`, write the sync note — and one thing more: it writes
+`{paths.briefs}/findings-YYYY-MM-DD.json` against `findings.schema.md`, holding only what Phase 2
+needs to build `content.json` without re-deriving it: candidate items, day-rail candidates, and
+the source-health record.
+
+**It returns a short summary to this session, never the raw findings.** A sentence or two — the
+sharpest thing found, whether every source was reachable — is all this session reads from it
+directly. Phase 2 gets everything else from `findings-YYYY-MM-DD.json`.
+
 1. **Work out the lookback.** List the `paths.briefs` folder. Find the most recent
    `brief-YYYY-MM-DD.html`. Look back from that date to now. If there is none, use
    `LOOKBACK_FALLBACK`. On a Monday this naturally reaches back across the weekend — that is
    the point, and Friday-evening and weekend traffic must not be skipped.
 2. **Gather** over that window, from whichever of these the reader has connected: meeting notes
-   and action items, email (threads where the reader was asked and has not replied), calendar,
-   team chat (spaces and DMs, see below), the issue tracker (assigned, mentioned, or moved),
-   Slack (mentions and DMs), the support inbox (conversations assigned to the reader or past
-   SLA), code review (review requested), and shared documents (shared with or awaiting them).
-3. **Update `paths.tasks`**: add new commitments, close ones the sources *prove* are done
-   (a ticket status, a sent reply, an action item marked done, a signed file), and keep the
-   existing section structure and date-stamped headings.
-4. **Update `paths.delegated`**: move returned items to Returned/closed, advance chase dates,
+   and action items (see below), email (threads where the reader was asked and has not replied),
+   calendar, team chat (spaces and DMs, see below), the issue tracker (assigned, mentioned, or
+   moved — see below), Slack (mentions and DMs, see below), the support inbox (conversations
+   assigned to the reader or past SLA, plus a network-signal pass — see below), code review
+   (review requested), and shared documents (shared with or awaiting them).
+3. **Scan for promises not yet kept.** Search the reader's own outbound messages — sent email,
+   team chat, Slack — over `PROMISE_LOOKBACK` (default 14 days) for commitment language: "I'll",
+   "I will", "let me", "sending," and relative or explicit dates. For each candidate, look for the
+   proof it was kept — a sent reply on the same thread, a ticket, a filed document — and drop it
+   if satisfied. **A promise still unproven stays open even if it falls outside the window.**
+   Something old enough that nobody would think to check must still surface, flagged long overdue
+   in `paths.tasks`, and keep resurfacing on every run until the reader says to stop. Never let a
+   promise silently age out because it predates the lookback. **A promise made to someone outside
+   the reader's own team — a customer, a partner, an executive elsewhere in the business —
+   outranks one made internally.** Say who it was made to, by role, never by name.
+
+   > The failure it prevents: a commitment made to an external partner survives, unkept, for long
+   > enough that nobody thinks to check, because nothing ever scans the reader's own outbound
+   > messages for promises — only what came in. It surfaces later by accident, after the damage is
+   > done.
+
+4. **Update `paths.tasks`**: add new commitments — including any the promise scan surfaced, and
+   any reconciliation-pass item promoted from the meeting-notes tool (see below) — close ones the
+   sources *prove* are done (a ticket status, a sent reply, an action item marked done, a signed
+   file), and keep the existing section structure and date-stamped headings. Read only the active
+   sections by default; reach for `paths.tasks_archive` only to check whether something was
+   already closed before treating it as still outstanding.
+5. **Update `paths.delegated`**: move returned items to Returned/closed, advance chase dates,
    and never leave an item without both an owner and a date.
-5. **Write `{paths.briefs}/task-sync-YYYY-MM-DD.md`** in the existing format
-   (Added / Completed or moved / Confirm these / Top 3 today / Source notes).
+6. **Write `{paths.briefs}/task-sync-YYYY-MM-DD.md`** in the existing format (Added / Completed
+   or moved / Confirm these / Needs reconciling / Top 3 today / Source notes) — and the findings
+   file described above.
 
 Do not invent completion. If a source does not prove it closed, leave it open and say so
 under "Confirm these".
+
+### Meeting notes and action items
+
+This tool is authoritative for **what was said and promised**, never for **what is finished**.
+Completion must be proven the same way the update-`paths.tasks` step already requires generally:
+a ticket status, a sent reply, a signed file, or a dated line in the vault — never an inference
+from the meeting tool's own state.
+
+Use two windows: the normal lookback for new asks, and a long, effectively unbounded window for
+action items still pending and assigned to the reader — the normal lookback can never see old
+debt.
+
+**Reconciliation pass.** For every pending item in the long window, check whether `paths.tasks`
+already closed it, or another source proves it done. Send the output to the sync note as a
+needs-reconciling list, not the brief — except promote a single item to the brief if it is
+glaring, judged by the same criteria that earn any item its place in Top to-dos or Gone quiet.
+
+Nothing gets ticked or closed automatically in this tool; Phase 1 only proposes. Write-back may
+not even be possible through the connected tool — some only support this from their own
+interface. Verify which is true for the reader's setup rather than assuming, and if it cannot
+write back, say so in the sync note instead of silently doing nothing.
 
 ### Team chat
 
@@ -77,6 +144,57 @@ Treat chat exactly like email: the question is who is waiting on the reader, not
   chased in chat is a stronger signal than either message alone. Say so when you see it.
 - Source key is `gchat`. Use it in an item's `glyphs` and in a section's `srcs`.
 - Never send a chat message. This run reads only.
+
+### The issue tracker
+
+Two things this run needs from an issue touched in the window, and one thing it must not fetch.
+
+- **Include comments, not just status and fields.** Daily progress narrative lives in the
+  comments; inferring status from field changes alone misses real movement. Pull them alongside
+  status, summary, and assignee whenever an issue is in scope.
+- **Keep the requested fields and response narrow.** Full descriptions are rarely needed and cost
+  context for nothing.
+- **Cross-reference every issue touched in the window.** For each one, search team chat, Slack,
+  and email for the bare ticket key. Open any thread or message that comes back, read it to the
+  end, and resolve its author by ID (rule 2 in Verify before you list). This is what rule 1 in
+  that section means by "open that thing and check it" — the concrete search, not just the
+  instruction to do it.
+
+### Slack
+
+Slack's search ANDs space-separated terms and has no boolean OR / AND / NOT operators, and
+natural-language search may not be available for a given workspace. Search with keyword and
+modifier syntax, not a query built assuming a smarter index sits behind it. The bottleneck logic
+is the same as team chat's — a DM outranks a channel, and a reply or reaction further down the
+thread kills the item — this section only adds what is specific to querying Slack itself.
+
+- **Never issue a bare date-filter query with no keywords.** A date filter on its own matches
+  nothing useful; every query needs at least one real term.
+- **Cover alternatives with separate searches, not operators.** If a term has two spellings or a
+  topic has two names, run two searches rather than trying to OR them into one.
+- **Zero results is a finding, not a failure.** Before declaring a source dead, run one
+  known-good control query — a ticket key touched in the window is a reliable one — to confirm
+  the connector itself is alive rather than the search just returning nothing. Only log the
+  source as dead per Source health if the control query also fails.
+- **A blank display name gets resolved by user-ID lookup, never left as-is or inferred from the
+  thread.** Same rule as rule 2 in Verify before you list — Slack is simply the source where a
+  blank name shows up most often.
+
+### The support inbox
+
+Two passes, not one.
+
+1. **Assigned to the reader, or past SLA.** The pass Phase 1 has always run.
+2. **Network signal, ignoring assignment.** Surface a conversation only when it clears **two or
+   more** of: flagged priority; SLA missed; raised by an escalated, multi-site, or
+   leadership-level reporter rather than a single individual; no reply after 48 hours; or two or
+   more conversations in the window describing the same underlying symptom from separate
+   reporters. That last one is the standout signal — one report is a support query, two
+   independent ones are a systems problem.
+
+Cap the second pass at `SUPPORT_NETWORK_CAP` items so it cannot crowd out the first. **Everyday,
+one-off support queries must never appear from either pass.** Resolve anyone named in a
+conversation by ID, never by name (rule 2 in Verify before you list).
 
 ---
 
@@ -130,6 +248,10 @@ event.
 
 The shape to hold on to: **a message is a claim, a ticket is a record.** Lead with the record.
 
+The issue-tracker subsection under Phase 1 spells out the concrete search this rule requires —
+the bare ticket key, searched across team chat, Slack, and email — so "open that thing and check
+it" is not a philosophy, it is a specific loop to run.
+
 #### The sections
 
 - **Push your work forward** — one item. The highest-leverage move available today: something
@@ -142,8 +264,12 @@ The shape to hold on to: **a message is a claim, a ticket is a record.** Lead wi
 - **Owed to you** — up to `MAX_PER_SECTION`, `act: stale`, source `paths.delegated`. Read the
   file: passed chase dates, never-handed-over items, blocked hand-offs.
 - **Gone quiet** — up to `MAX_PER_SECTION`, `act: stale`. Open items in `paths.tasks` untouched
-  for 14+ days that nobody is chasing. Show the age. Weight commitments made to the reader's own
-  leadership highest — those cost the most to have forgotten.
+  for 14+ days that nobody is chasing, plus anything the promise scan (Phase 1) flagged long
+  overdue regardless of its own window — that flag keeps it resurfacing here until the reader says
+  to stop. Show the age. Weight a promise made to someone outside the reader's own team — a
+  customer, a partner, an executive elsewhere in the business — highest of all; among the
+  reader's own team, weight commitments made to their own leadership next. Say who a promise was
+  made to, by role, never by name.
 - **Your day** — today's calendar in the reader's timezone, plus tomorrow as context only (a
   deadline or a prep item may earn a `tomorrow` row). Include personal blocks. Name collisions
   between work and personal.
@@ -308,13 +434,13 @@ that it has now failed twice and needs reconnecting.
 3. `python3 build.py content.json brief-YYYY-MM-DD.html` — it fails loudly on an unfilled slot
    rather than shipping a broken page. Never read `fraunces-600.b64` into context; the script
    substitutes it.
-4. Screenshot the result and **look at the image**. Check: marginalia centred on the hero, no
-   console errors, every item title linked, source chips present and correctly sized, feedback
-   boxes collapsed, tick a row and confirm the copy output is well-formed Markdown. Also confirm
-   every `http(s)` anchor carries `target="_blank"` and no app-protocol anchor does. Then re-read
-   every item in Top to-dos, Owed to you and Gone quiet and ask, for each one: which record did I
-   open to confirm this is still true? If the answer is "none", either go and open it or drop the
-   item. Fix before delivering.
+4. Screenshot the result — **one full-page image, not a series of bands or crops** — and look at
+   it. Check: marginalia centred on the hero, no console errors, every item title linked, source
+   chips present and correctly sized, feedback boxes collapsed, tick a row and confirm the copy
+   output is well-formed Markdown. Also confirm every `http(s)` anchor carries `target="_blank"`
+   and no app-protocol anchor does. Then re-read every item in Top to-dos, Owed to you and Gone
+   quiet and ask, for each one: which record did I open to confirm this is still true? If the
+   answer is "none", either go and open it or drop the item. Fix before delivering.
 5. Send the file to the reader, then commit it to `{paths.briefs}/brief-YYYY-MM-DD.html`.
    **A new file each day. Never overwrite a previous brief, and do not maintain a
    `brief-today.html`.**
@@ -340,3 +466,9 @@ that it has now failed twice and needs reconnecting.
   before carrying it forward. Yesterday's brief is not evidence. An item that has been listed
   three mornings running is either genuinely stuck, in which case say how long and why, or it was
   closed and nobody checked.
+- **This template does not add a dedicated code-hosting source beyond `github`'s existing
+  review-requested chip.** A scheduled run's sandbox commonly cannot authenticate to a private
+  git host anyway; the issue tracker is usually the system of record for status, and a ticket key
+  already lets PR-linked work be found through it; CI failures typically arrive by email and are
+  already picked up by the gather step. This is a decision, not an oversight — do not add one
+  without a real gap driving it.
