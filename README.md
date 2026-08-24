@@ -107,13 +107,14 @@ daily-brief/
 ├── SPEC.md                  # what the run does. edit this, not the task prompt
 ├── config.json.example       # copy to config.json. the only file you must edit
 ├── content.schema.md         # the contract for the daily content
+├── findings.schema.md        # the contract for the Phase 1 → Phase 2 handoff
 ├── task-prompt.md            # the eight lines you paste into the scheduled task
 ├── build.py                  # renders content.json -> the HTML file
 ├── shell.html                # the page. all the CSS lives here
 ├── fraunces-600.b64          # embedded font, never read into context
 ├── hero-fallback.b64         # blurred wash so a failed image is not a hole
 ├── nga-paintings.json        # National Gallery paintings the hero falls back to
-├── templates/                # starting shapes for your tasks + delegated files
+├── templates/                # starting shapes for your tasks + delegated files, plus an archive
 └── examples/                 # known-good content.json to diff against
 ```
 

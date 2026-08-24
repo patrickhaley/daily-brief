@@ -11,11 +11,11 @@ where the package lives.
 ```
 Read Routines/daily-brief/SPEC.md in my vault first and follow it exactly. It is
 the source of truth for this task and it supersedes anything you might assume from
-the task's name. Read content.schema.md in the same folder before writing any
-content.
+the task's name. Read content.schema.md and findings.schema.md in the same folder
+before writing anything.
 
-Both phases, in order: sync my tasks and delegated files and write the sync note
-first, then build today's brief.
+Delegate Phase 1 to a subagent per SPEC.md, then do Phase 2 yourself in this
+session once it returns.
 
 Write content.json against content.schema.md, render it with build.py, screenshot
 the result and look at the image before you deliver it.

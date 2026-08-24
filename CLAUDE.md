@@ -141,11 +141,14 @@ so the run never re-derives the design and the brief cannot drift when a section
 - **Run behaviour, switches, and the rules that stop the brief being wrong → `SPEC.md`.**
   Edit this, not the task prompt.
 - **The shape of `content.json` → `content.schema.md`.**
+- **The shape of the Phase 1 → Phase 2 handoff → `findings.schema.md`.**
 - **Layout, palette, browser behaviour → `shell.html` + `theme` in `config.json`.**
 
-`SPEC.md` describes a two-phase run: Phase 1 syncs the reader's tasks and delegated Markdown
-files, Phase 2 builds the page. Phase 1 is the only thing in the whole run permitted to write
-outside the output folder; every other source is read-only.
+`SPEC.md` describes a two-phase run: Phase 1 — a delegated subagent — syncs the reader's tasks
+and delegated Markdown files and writes a findings file for Phase 2 to read; Phase 2 runs in the
+orchestrating session and builds the page. Phase 1 is the only thing in the whole run permitted to
+write outside the output folder; the findings file it also writes lives inside `paths.briefs`, so
+that invariant still holds.
 
 ### Adding a source
 
