@@ -23,15 +23,15 @@ Change these here, not in the scheduled task prompt.
 | Switch | Default | Notes |
 |---|---|---|
 | `HERO` | `painting` | `painting` generates a themed image via an image MCP (costs credits). `drawing` renders a free line-drawing SVG of the day instead. `off` sets `hero.nga: false` and uses the neutral wash only. A National Gallery painting backs up the first two. |
-| `MAX_TODOS` | 3 | Top to-dos. Never pad to reach it. |
-| `MAX_PER_SECTION` | 3 | New updates, Owed to you, Gone quiet. |
+| `MAX_TODOS` | 2-5 | Top to-dos. A range, not a target — list what's genuinely urgent or blocking, and stop; never pad toward the top end. |
+| `MAX_PER_SECTION` | 2-5 | New updates, Owed to you, Gone quiet. Same rule: the count should track how much real signal came in, not this ceiling. |
 | `NOTIFY` | `always` | Push every morning. `sharp-only` notifies only when something is time-critical. |
 | `LOOKBACK_FALLBACK` | 72h | Used when there is no previous brief to look back from. |
 | `link_mode` | `app` | `app` points links at the desktop app where one exists (Slack). `web` keeps browser URLs. In `config.json`, overridable per day in `content.json`. |
 | `slack_team` | unset | The reader's Slack team id (`T…`). When set, Slack links deep-link straight to the channel in the app instead of going via `slack.com/app_redirect`. |
 | `PHASE1_MODEL` | `haiku` | The fastest/cheapest tier your harness offers. Phase 1 does no page-voice work, so cost and speed beat capability here. Change it here, never in the task prompt. |
 | `PROMISE_LOOKBACK` | 14d | Window Phase 1 scans the reader's own outbound messages for unkept promises. A promise older than this still surfaces if it is still unproven — see Phase 1. |
-| `SUPPORT_NETWORK_CAP` | 2 | Max items the support-inbox network-signal pass may contribute, so it cannot crowd out conversations already assigned to the reader. |
+| `SUPPORT_NETWORK_CAP` | 1-2 | Max items the support-inbox network-signal pass may contribute, so it cannot crowd out conversations already assigned to the reader. Use the low end unless that pass is turning up something genuinely worth the reader's attention. |
 
 Sections are optional. Drop any section the reader does not want by leaving it out of
 `content.json`; add one by adding an object to `sections`. `build.py` renders what it is given,
@@ -257,13 +257,14 @@ it" is not a philosophy, it is a specific loop to run.
 - **Push your work forward** — one item. The highest-leverage move available today: something
   that unblocks other people, or that has a forum on today's calendar. Prefer leverage over
   urgency; urgent-but-small belongs in Top to-dos.
-- **Top to-dos** — up to `MAX_TODOS`, `act: done`. Someone is blocked on them, a window closes
-  today, or it gets harder to undo. Verify it is still open before listing it.
-- **New updates** — up to `MAX_PER_SECTION`, `act: seen`. Things that moved without them inside
+- **Top to-dos** — within `MAX_TODOS`, `act: done`. Someone is blocked on them, a window closes
+  today, or it gets harder to undo. Verify it is still open before listing it. A quiet day lands
+  near the low end of the range; only a genuinely packed one reaches the top.
+- **New updates** — within `MAX_PER_SECTION`, `act: seen`. Things that moved without them inside
   the lookback. Prefer items where the movement changes what they should do.
-- **Owed to you** — up to `MAX_PER_SECTION`, `act: stale`, source `paths.delegated`. Read the
+- **Owed to you** — within `MAX_PER_SECTION`, `act: stale`, source `paths.delegated`. Read the
   file: passed chase dates, never-handed-over items, blocked hand-offs.
-- **Gone quiet** — up to `MAX_PER_SECTION`, `act: stale`. Open items in `paths.tasks` untouched
+- **Gone quiet** — within `MAX_PER_SECTION`, `act: stale`. Open items in `paths.tasks` untouched
   for 14+ days that nobody is chasing, plus anything the promise scan (Phase 1) flagged long
   overdue regardless of its own window — that flag keeps it resurfacing here until the reader says
   to stop. Show the age. Weight a promise made to someone outside the reader's own team — a
