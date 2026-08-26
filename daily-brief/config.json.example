@@ -2,18 +2,18 @@
   "_comment": "Everything in this file is yours to change. build.py reads it; nothing here is required. Delete a key to fall back to the built-in default.",
 
   "vault": "PersonalOS",
-  "vault_label": "vault",
+  "vault_label": "Obsidian vault",
   "timezone": "America/New_York",
   "link_mode": "app",
   "slack_team": null,
 
   "paths": {
-    "package": "Routines/daily-brief",
-    "briefs": "Work/Briefs",
-    "tasks": "TASKS.md",
-    "delegated": "DELEGATED.md",
-    "tasks_archive": "TASKS-archive.md",
-    "voice": "Memory/Reference/voice-principles.md"
+    "package": "[PATH_TO_OBSIDIAN_VAULT]/Routines/daily-brief",
+    "briefs": "[PATH_TO_OBSIDIAN_VAULT]/Work/Briefs",
+    "tasks": "[PATH_TO_OBSIDIAN_VAULT]/TASKS.md",
+    "delegated": "[PATH_TO_OBSIDIAN_VAULT]/DELEGATED.md",
+    "tasks_archive": "[PATH_TO_OBSIDIAN_VAULT]/TASKS-archive.md",
+    "voice": "[PATH_TO_OBSIDIAN_VAULT]/Memory/Reference/voice-principles.md"
   },
 
   "sources": {
